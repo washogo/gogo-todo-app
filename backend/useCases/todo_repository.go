@@ -3,14 +3,14 @@ package useCases
 import "github.com/washogo/gogo-todo-app/domain"
 
 type TodoCreateData struct {
-	Title			 string
-	Description string
+	Title       string `validate:"required"`
+	Description string `validate:"required"`
 }
 
 type TodoUpdateData struct {
-	ID					 int
-	Title			 string
-	Description string
+	ID          int    `validate:"required"`
+	Title       string `validate:"required"`
+	Description string `validate:"required"`
 }
 
 type TodoOutputData struct {

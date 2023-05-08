@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"github.com/go-playground/validator/v10"
 
 	"github.com/washogo/gogo-todo-app/useCases"
 )
@@ -33,10 +34,17 @@ func NewTodoController(todoUseCase *useCases.TodoUseCase) TodoController {
 	}
 }
 
+// CORS対応
 func setCorsHeaders(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+}
+
+// バリデーションを行う
+func validate(target interface{}) error {
+	validate := validator.New()
+	return validate.Struct(target)
 }
 
 // GetAll はtodoの一覧を取得する
@@ -62,7 +70,14 @@ func (tc *todoController) Create(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&tcd); err != nil {
 		log.Println(err)
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, "リクエストの形式が間違っています", http.StatusBadRequest)
+		return
+	}
+
+	// バリデーションを実行する
+	if err := validate(tcd); err != nil {
+		log.Println(err)
+		http.Error(w, "リクエストの形式が間違っています", http.StatusBadRequest)
 		return
 	}
 
@@ -83,7 +98,13 @@ func (tc *todoController) Update(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&tud); err != nil {
 		log.Println(err)
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, "リクエストの形式が間違っています", http.StatusBadRequest)
+		return
+	}
+
+	if err := validate(tud); err != nil {
+		log.Println(err)
+		http.Error(w, "リクエストの形式が間違っています", http.StatusBadRequest)
 		return
 	}
 
@@ -101,13 +122,20 @@ func (tc *todoController) Delete(w http.ResponseWriter, r *http.Request) {
 	setCorsHeaders(w)
 
 	var deleteParams struct {
-		ID int64 `json:"id"`
+		ID int64 `json:"id" validate:"required"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&deleteParams); err != nil {
 		log.Println(err)
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, "リクエストの形式が間違っています", http.StatusBadRequest)
+		return
+	}
+
+	// バリデーションを実行する
+	if err := validate(deleteParams); err != nil {
+		log.Println(err)
+		http.Error(w, "リクエストの形式が間違っています", http.StatusBadRequest)
 		return
 	}
 
