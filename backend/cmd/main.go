@@ -15,12 +15,14 @@ import (
 )
 
 func main() {
+	// MySQLへの接続
 	dsn := "myuser:password@tcp(mysql)/mydb?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		panic(err.Error())
 	}
 
+	// MySQLへの接続確認
 	if err := db.Ping(); err != nil {
 		log.Fatal(err)
 	}
@@ -34,7 +36,7 @@ func main() {
 
 	defer db.Close()
 
-	// それぞれ初期化
+	// repository, useCase, controllerの初期化
 	todoRepository := gateway.NewTodoRepository(db)
 	todoUseCase := useCases.NewTodoUseCase(todoRepository)
 	todoController := controllers.NewTodoController(todoUseCase)
