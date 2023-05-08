@@ -47,6 +47,15 @@ func validate(target interface{}) error {
 	return validate.Struct(target)
 }
 
+// エラーレスポンスの設定を行う
+func setErrorResponse(message string, w http.ResponseWriter, statusCode int) {
+	errorMessage := map[string]string{"message": message}
+	jsonMessage, _ := json.Marshal(errorMessage)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	w.Write(jsonMessage)
+}
+
 // GetAll はtodoの一覧を取得する
 func (tc *todoController) GetAll(w http.ResponseWriter, r *http.Request) {
 	setCorsHeaders(w)
@@ -70,14 +79,14 @@ func (tc *todoController) Create(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&tcd); err != nil {
 		log.Println(err)
-		http.Error(w, "リクエストの形式が間違っています", http.StatusBadRequest)
+		setErrorResponse("リクエストの形式が間違っています", w, http.StatusBadRequest)
 		return
 	}
 
 	// バリデーションを実行する
 	if err := validate(tcd); err != nil {
 		log.Println(err)
-		http.Error(w, "リクエストの形式が間違っています", http.StatusBadRequest)
+		setErrorResponse("リクエストの形式が間違っています", w, http.StatusBadRequest)
 		return
 	}
 
@@ -98,13 +107,13 @@ func (tc *todoController) Update(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&tud); err != nil {
 		log.Println(err)
-		http.Error(w, "リクエストの形式が間違っています", http.StatusBadRequest)
+		setErrorResponse("リクエストの形式が間違っています", w, http.StatusBadRequest)
 		return
 	}
 
 	if err := validate(tud); err != nil {
 		log.Println(err)
-		http.Error(w, "リクエストの形式が間違っています", http.StatusBadRequest)
+		setErrorResponse("リクエストの形式が間違っています", w, http.StatusBadRequest)
 		return
 	}
 
@@ -128,14 +137,14 @@ func (tc *todoController) Delete(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&deleteParams); err != nil {
 		log.Println(err)
-		http.Error(w, "リクエストの形式が間違っています", http.StatusBadRequest)
+		setErrorResponse("リクエストの形式が間違っています", w, http.StatusBadRequest)
 		return
 	}
 
 	// バリデーションを実行する
 	if err := validate(deleteParams); err != nil {
 		log.Println(err)
-		http.Error(w, "リクエストの形式が間違っています", http.StatusBadRequest)
+		setErrorResponse("リクエストの形式が間違っています", w, http.StatusBadRequest)
 		return
 	}
 
