@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
+import { BaseButton, BaseInput, BaseTextarea } from './components/atoms/Index';
 
 type Status = '未着手' | '着手中' | '完了';
 
@@ -186,21 +187,20 @@ function App() {
         <SContentContainer>
           <SFormWrapper>
             <SLabel htmlFor="title">Title</SLabel>
-            <SInput
+            <BaseInput
               id="title"
-              type="text"
               placeholder="タイトルを入力してください"
               value={title}
-              onChange={handleChangeTitle}
+              onChangeHandler={handleChangeTitle}
             />
           </SFormWrapper>
           <SFormWrapper>
             <SLabel htmlFor="detail">Detail</SLabel>
-            <STextarea
+            <BaseTextarea
               id="detail"
               placeholder="詳細を入力してください"
               value={description}
-              onChange={handleChangeDetail}
+              onChangeHandler={handleChangeDetail}
             />
           </SFormWrapper>
           <SFormWrapper>
@@ -211,7 +211,7 @@ function App() {
               <SOption value="完了">完了</SOption>
             </SSelect>
           </SFormWrapper>
-          <SButton onClick={() => handleSubmit(title, description, status)}>追加</SButton>
+          <BaseButton text="追加" onClickHandler={() => handleSubmit(title, description, status)} />
         </SContentContainer>
         {isEdit && (
           <SContentContainer>
@@ -219,26 +219,25 @@ function App() {
               <SLabel htmlFor="edit-title" ref={ref}>
                 EditTitle
               </SLabel>
-              <SInput
+              <BaseInput
                 id="edit-title"
-                type="text"
                 placeholder="タイトルを入力してください"
                 value={title}
-                onChange={handleChangeTitle}
+                onChangeHandler={handleChangeTitle}
               />
             </SFormWrapper>
             <SFormWrapper>
               <SLabel htmlFor="edit-detail">EditDetail</SLabel>
-              <STextarea
+              <BaseTextarea
                 id="edit-detail"
                 placeholder="詳細を入力してください"
                 value={description}
-                onChange={handleChangeDetail}
+                onChangeHandler={handleChangeDetail}
               />
             </SFormWrapper>
             <SButtonWrapper>
-              <SButton onClick={() => handleUpdate(editId, title, description)}>編集</SButton>
-              <SButton onClick={handleCancelEdit}>キャンセル</SButton>
+              <BaseButton text="編集" onClickHandler={() => handleUpdate(editId, title, description)} />
+              <BaseButton text="キャンセル" onClickHandler={handleCancelEdit} />
             </SButtonWrapper>
           </SContentContainer>
         )}
@@ -254,7 +253,7 @@ function App() {
               {todoList.map((todo, index) => (
                 <STableBodyItem key={index}>
                   <STitleDisplay>{todo.title}</STitleDisplay>
-                  <SButton>{todo.status}</SButton>
+                  <BaseButton text={todo.status} />
                   <FaEdit onClick={() => handleSwitchEdit(todo.id)} size="1.5em" />
                   <FaTrashAlt onClick={() => handleDelete(todo.id)} size="1.5em" />
                 </STableBodyItem>
@@ -318,24 +317,6 @@ const SFormWrapper = styled.div`
   gap: 1em;
   width: 100%;
   max-width: 343px;
-`;
-
-const SInput = styled.input`
-  width: 100%;
-  max-width: 343px;
-  min-height: 45px;
-  border: none;
-  border-radius: 8px;
-  padding: 0.5em;
-`;
-
-const STextarea = styled.textarea`
-  width: 100%;
-  max-width: 343px;
-  min-height: 200px;
-  border: none;
-  border-radius: 8px;
-  padding: 0.5em;
 `;
 
 const SSelect = styled.select`
@@ -417,15 +398,6 @@ const STitleDisplay = styled.div`
 const SButtonWrapper = styled.div`
   display: flex;
   gap: 1em;
-`;
-
-const SButton = styled.button`
-  width: 80px;
-  height: 30px;
-  border-radius: 24px;
-  background-color: #ffd700;
-  color: #fff;
-  border: none;
 `;
 
 export default App;
