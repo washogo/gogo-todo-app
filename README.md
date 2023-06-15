@@ -5,7 +5,10 @@
 ## 設計
 ### フロントエンド
 - Container/Presentationalパターン
-  - https://zenn.dev/buyselltech/articles/9460c75b7cd8d1?redirected=1 
+  - https://zenn.dev/buyselltech/articles/9460c75b7cd8d1?redirected=1
+
+### バックエンド
+- クリーンアーキテクチャ
 
 ## ディレクトリ構成
 未着手
